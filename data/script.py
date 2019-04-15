@@ -8,7 +8,7 @@ plt.rc('font', size=13, family = 'serif')
 plt.rc('legend', fontsize=14)
 plt.rc('text.latex', preamble=r'\usepackage[russian]{babel}')
 
-data = np.loadtxt('data/data.tsv')
+data = np.loadtxt('data.tsv')
 size = data.shape
 Et, T, Iob, Ik1, Ik2 = [],[],[],[],[]
 # Re = 10 #Ohm

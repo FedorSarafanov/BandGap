@@ -1,0 +1,202 @@
+\documentclass[tikz,14pt]{standalone}
+\usepackage{cmap}
+\usepackage[T2A]{fontenc}
+% \usepackage[utf8x]{inputenc}
+
+\usepackage[russian]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\usepackage{pgfplotstable}
+\begin{document}
+	\begin{tikzpicture}
+		    \begin{axis}[
+		    % width=7cm,
+		    height=7cm,
+			grid=both,
+			scale=1,
+			% xmode=log,
+			grid style={line width=.1pt, draw=gray!10},
+			major grid style={line width=.2pt,draw=gray!50},
+			% axis lines=middle,
+			% minor tick num=5,
+			% xmin=1000, 
+			% xmax=11,
+			% ymin=0,
+			% ymax=5,
+			xlabel={$10^3\cdot T^{-1}$, K},
+			ylabel={$\ln(\sigma)$},
+			tick style={very thick},
+		    % scale=0.5,
+			% ytick={14,16,20,22}, 
+			% xtick={-6,-2,0}, 
+		    grid=both,
+		    grid style={line width=.3pt, draw=black!20},
+		    major grid style={line width=.1pt,draw=black!90},
+		    minor y tick num=4,
+		    minor x tick num=4,
+		    % minor x tick num=4,   
+		     % xmode=log,
+		    % xmode=log,ymode=normal,
+		    % ytick distance=0.1,
+		    % xtick distance=250,
+		    % ytick distance=0.098171875,
+		    % ymax = 1.8,
+		    % xmin = 0,
+		    % xmax = 2000,
+		    % ymin = 0,
+		    /pgf/number format/.cd,
+		    1000 sep={},
+		    x tick label style={scale=0.8},
+		    y tick label style={scale=0.8},
+		    % unit vector ratio*=1 100,
+			% yticklabel={
+			% \pgfmathparse{\tick/0.098171875/32}
+			% \pgfmathifisint{\pgfmathresult}{$\pgfmathprintnumber[int detect]{\pgfmathresult}{}$}%
+			% {%
+	  %          {$\pgfmathprintnumber[frac, frac denom=32,frac whole=false]{\pgfmathresult}\pi$}
+			% }{}
+			% },	
+			% yticklabel={0}			
+			% yticklabels={$\frac{\pi}{2}$,%
+			% $\frac{\pi}{4}$
+			% 1},			
+		    % xmax = 40,
+		    % ticklabel style={font=\tiny,fill=white},    
+		    % axis lines=middle, 	
+		    % xlabel style={right, xshift=1em},
+		    % ylabel style={above},	
+		    % x label style={at={(axis description cs:0.5,-0.08)},anchor=north},
+		    % y label style={at={(axis description cs:-0.08,.5)},rotate=90,anchor=south}	,
+		     % y dir=reverse
+		     % restrict y to domain=0:2,    		
+		     % restrict x to domain=0:3000,    		
+			% legend style={
+			% at={(rel axis cs:0,1)},
+			% anchor=north west,draw=none,inner sep=0pt,fill=gray!10}
+			% extra y ticks={17.62},	% положение дополнительных тиков
+			% extra x ticks={-3.5},	% положение дополнительных тиков
+			% extra y tick labels={	% их подписи
+			 		% {$17.62$}
+			% }, 		
+			legend pos={north west},
+			% y dir=reverse,
+			% ymode=log,
+		]
+	     % \xdef\C{5e-8}
+	     % \xdef\R{13000}
+
+\pgfplotstablesave[
+	create on use/ik/.style={
+	    create col/expr={
+	    (\thisrow{ik1}+\thisrow{ik2})/2
+	    }
+	},	
+	create on use/Uk/.style={
+	    create col/expr={
+	    (\thisrow{ik1}+\thisrow{ik2})/2*10 % U_k=I_k * R_э, R_э = 10 Ом
+	    }
+	},	
+	create on use/Rob/.style={
+	    create col/expr={
+	    (\thisrow{ik1}+\thisrow{ik2})/2*10/\thisrow{iobr}
+	    }
+	},	
+	create on use/lnsigma/.style={
+	    create col/expr={
+	    ln(7/(1.4*4*(\thisrow{ik1}+\thisrow{ik2})/2*10/\thisrow{iobr}))
+	    }
+	},	
+	create on use/sigma/.style={
+	    create col/expr={
+	    7/(1.4*4*(\thisrow{ik1}+\thisrow{ik2})/2*10/\thisrow{iobr})
+	    }
+	},	
+	create on use/yerr/.style={
+	    create col/expr={
+	    abs(\thisrow{u}/100*0.5)+0.2
+	    }
+	},	
+	% create on use/xerr/.style={
+	%     create col/expr={
+	%     abs((\thisrow{i}>3?10/100*2.5:3/100*2.5))
+	%     }
+	% },
+	create on use/Tobr/.style={
+	    create col/expr={
+	    1000/(-0.020*\thisrow{e}^4+0.420*\thisrow{e}^3-3.577*\thisrow{e}^2+39.46*\thisrow{e}+27+273.15)
+	    }
+	},	
+	create on use/T/.style={
+	    create col/expr={
+	    -0.020*\thisrow{e}^4+0.420*\thisrow{e}^3-3.577*\thisrow{e}^2+39.46*\thisrow{e}+27+273.15
+	    }
+	},	
+	% x=Tobr, 
+	% y=lnsigma, 
+	columns={T,sigma}
+]
+{../data/sfgdata.tsv}
+{sfgdata_modified.tsv};
+
+
+		\addplot +[mark=*, line width=0.7pt, mark size=1pt, black] plot [error bars/.cd, y dir = both, x dir = both, y explicit, x explicit] table 
+		[		    	    	    	
+			create on use/ik/.style={
+			    create col/expr={
+			    (\thisrow{ik1}+\thisrow{ik2})/2
+			    }
+			},	
+			create on use/Uk/.style={
+			    create col/expr={
+			    (\thisrow{ik1}+\thisrow{ik2})/2*10 % U_k=I_k * R_э, R_э = 10 Ом
+			    }
+			},	
+			create on use/Rob/.style={
+			    create col/expr={
+			    (\thisrow{ik1}+\thisrow{ik2})/2*10/\thisrow{iobr}
+			    }
+			},	
+			create on use/lnsigma/.style={
+			    create col/expr={
+			    ln(7/(1.4*4*(\thisrow{ik1}+\thisrow{ik2})/2*10/\thisrow{iobr}))
+			    }
+			},	
+			create on use/yerr/.style={
+			    create col/expr={
+			    abs(\thisrow{u}/100*0.5)+0.2
+			    }
+			},	
+			create on use/xerr/.style={
+			    create col/expr={
+			    abs((\thisrow{i}>3?10/100*2.5:3/100*2.5))
+			    }
+			},
+			create on use/Tobr/.style={
+			    create col/expr={
+			    1000/(-0.020*\thisrow{e}^4+0.420*\thisrow{e}^3-3.577*\thisrow{e}^2+39.46*\thisrow{e}+27+273.15)
+			    }
+			},	
+			x=Tobr, 
+			y=lnsigma, 
+			% y error=yerr,
+			% x error=xerr
+		] 
+		{../data/sfgdata.tsv};
+
+	        % \addplot +[mark=*, mark size=1.2pt, mark color=red, only marks] plot [error bars/.cd, y dir = both, y explicit] table [x=i, y=d] {../data/11.tsv};
+	        % \addlegendentry{$U_c=-7$ В}
+
+
+	     % \addplot [samples=100, domain=-0.5:10.5, blue!30!black] {0.01192* x^3 - 0.3959*x^2 + 1.575*x};
+	     % \draw[fill=magenta] (-3.5,17.62) coordinate (a) circle (5pt);
+	     % \draw[black,thick,dashed] (a) --(-7,17.62);
+	     % \draw[black,thick,dashed] (a) --(-3.5,0);
+
+	     % \draw[black] (-4.8,21) node {$K_\text{чм}=1220$};
+		    \end{axis}
+	     % \draw[fill=magenta] (a) circle (5pt);
+		\end{tikzpicture}	
+\end{document}
